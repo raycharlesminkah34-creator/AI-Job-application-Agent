@@ -11,8 +11,6 @@ ADZUNA_APP_ID = os.environ.get("ADZUNA_APP_ID")
 ADZUNA_APP_KEY = os.environ.get("ADZUNA_APP_KEY")
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 
-print(ADZUNA_APP_ID)
-
 tools = [
     {
         "type": "function",
@@ -69,6 +67,21 @@ tools = [
                 "required": ["cv_input"]
             }
            
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "cv_tailor",
+            "description": "This tool takes the extracted cv as input and precisely and accurately tailors the cv to suit the job description.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "cv_extract": {"type": "string", "description": "This is the cv input of the user"},
+                    "job_description": {"type": "string", "description": "This describe the skill and character requirements of a job."}
+                },
+                "required": ["cv_extract", "job_description"]
+            }
         }
     }
 ]
@@ -134,6 +147,33 @@ def cv_reader(cv_input):
     except Exception as e:
         return {"error": str(e)}
 
+def cv_tailor(cv_extract, job_description):
+    messages = [{
+        "role": "user",
+        "content": f"""You are a world class recruiter and CV writer.
+        
+Tailor the following CV to match the job description below.
+- Keep all facts accurate — do not invent experience or qualifications
+- Reorder and rephrase to highlight relevant skills
+- Use keywords from the job description
+- Keep the same CV structure and format
+
+CV:
+{cv_extract}
+
+Job Description:
+{job_description}
+
+Return the full tailored CV only — no commentary."""
+    }]
+
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=messages
+    )
+    return response.choices[0].message.content
+
+
 messages = [] 
 client = Groq(api_key=GROQ_API_KEY)
 
@@ -172,6 +212,14 @@ while True:
             results = cv_reader(
                 cv_input=tool_inputs["cv_input"]
             )
+
+        elif tool_name == "cv_tailor":
+            results = cv_tailor(
+                cv_extract=tool_inputs["cv_extract"],
+                job_description=tool_inputs["job_description"]
+            )
+
+
 
         messages.append(response.choices[0].message)
         messages.append({
