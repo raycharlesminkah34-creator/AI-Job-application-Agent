@@ -4,6 +4,8 @@ from schema.tool_schema import tools
 from tools.job_search import remote_job_search
 from tools.cv_reader import cv_reader
 from tools.cv_tailor import cv_tailor
+from tools.apply import auto_apply
+
 
 messages = []
 
@@ -50,6 +52,18 @@ while True:
                 job_description=tool_inputs["job_description"]
             )
 
+
+        elif tool_name == "auto_apply":
+            results = auto_apply(
+                job_url=tool_inputs["job_url"],
+                tailored_cv=tool_inputs["tailored_cv"],
+                user_info={
+                    "name": tool_inputs["user_name"],
+                    "email": tool_inputs["user_email"],
+                    "phone": tool_inputs.get("user_phone", "")
+                }
+            )
+        
         messages.append(response.choices[0].message)
         messages.append({
             "role": "tool",
