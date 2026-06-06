@@ -1,5 +1,5 @@
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
-from tools.apply import save_to_pdf
+from tools.pdf_save import save_to_pdf
 import time
 
 def detect_captcha(page):

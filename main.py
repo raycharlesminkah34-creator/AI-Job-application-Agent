@@ -5,6 +5,8 @@ from tools.job_search import remote_job_search
 from tools.cv_reader import cv_reader
 from tools.cv_tailor import cv_tailor
 from tools.apply import auto_apply
+from tools.pdf_save import save_to_pdf
+
 
 
 messages = []
