@@ -78,5 +78,33 @@ tools = [
                 "required": ["cv_extract", "job_description"]
             }
         }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "auto_apply",
+            "description": "This tool automatically fills fields and apply for selected jobs.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "job_url": {"type": "string", "description": "This is the link for the job site"},
+                    "tailored_cv": {"type": "string", "description": "This is the tailored cv specific to that job"},
+                    
+                "user_name": {
+                    "type": "string",
+                    "description": "The applicant's full name."
+                },
+                "user_email": {
+                    "type": "string",
+                    "description": "The applicant's email address."
+                },
+                "user_phone": {
+                    "type": "string",
+                    "description": "The applicant's phone number. Optional."
+                }
+                },
+                "required": ["job_url", "tailored_cv", "user_name", "user_email"]
+            }
+        }
     }
 ]
